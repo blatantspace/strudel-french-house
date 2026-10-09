@@ -1,23 +1,30 @@
 // French house. 4/4, one cycle is one bar, 133.136 bpm.
-// Sixteen bars. The sample is four bars of the recording, looped.
-// The chords are the same four every time: C#m7, A, E, B.
-// First four bars are the filter opening. Then the jive stabs and the bass lock in.
-// The jive is two bars long. It only hits off the beat, and the gaps are uneven.
+// Sixteen bars. Four bars of filter, then the chords walk down twice.
+// A, G#, F#, F, E, D. Triads. The walk does not come home.
+// The jive only hits off the beat. The kick stays on every beat.
 
-samples({ loop: 'https://raw.githubusercontent.com/blatantspace/strudel-french-house/main/grid.wav' })
+samples({
+  loop: 'https://raw.githubusercontent.com/blatantspace/strudel-french-house/main/grid.wav',
+  take: 'https://raw.githubusercontent.com/blatantspace/strudel-french-house/main/take2-grid.wav',
+  chords: 'https://raw.githubusercontent.com/blatantspace/strudel-french-house/main/chord-grid.wav'
+})
 
 setcpm((60 * 48000 / 21632) / 4)
 
 const BARS = "<2 3 4 5>"
 
+// original loop. speed follows the walk once the chords enter, down from C#.
+const BED_SPEED = "<1 1 1 1 0.794 0.749 0.667 0.630 0.595 0.530 0.794 0.749 0.667 0.630 0.595 0.530>"
+
 $: s("loop")
   .slice(7, BARS)
+  .speed(BED_SPEED)
   .cut(1)
   .legato(1)
   .hpf(90)
   .lpf("<500 800 1200 1800 2600 3600 5000 7000 9000 11000 12000 12000 12000 12000 10000 8000>")
   .room(0.08)
-  .gain(0.72)
+  .gain(0.48)
 
 $: note("cs2")
   .s("sine")
@@ -48,8 +55,8 @@ $: s("white")
   .struct("<~ ~ ~ ~ [~ x ~ x] [~ x ~ x] [~ x ~ x] [~ x ~ x] [~ x ~ x] [~ x ~ x] [~ x ~ x] [~ x ~ x] [~ x ~ x] [~ x ~ x] [~ x ~ x] [~ x ~ x]>")
   .gain(0.22)
 
-// roots only, on 1 and 3, same shape every bar
-const BASS = "<~ ~ ~ ~ [cs2 ~ cs2 ~] [a2 ~ a2 ~] [e2 ~ e2 ~] [b2 ~ b2 ~] [cs2 ~ cs2 ~] [a2 ~ a2 ~] [e2 ~ e2 ~] [b2 ~ b2 ~] [cs2 ~ cs2 ~] [a2 ~ a2 ~] [e2 ~ e2 ~] [b2 ~ b2 ~]>"
+// roots on 1 and 3. same walk as the chords.
+const BASS = "<~ ~ ~ ~ [a2 ~ a2 ~] [gs2 ~ gs2 ~] [fs2 ~ fs2 ~] [f2 ~ f2 ~] [e2 ~ e2 ~] [d2 ~ d2 ~] [a2 ~ a2 ~] [gs2 ~ gs2 ~] [fs2 ~ fs2 ~] [f2 ~ f2 ~] [e2 ~ e2 ~] [d2 ~ d2 ~]>"
 
 $: note(BASS)
   .s("sine")
@@ -71,8 +78,7 @@ $: note(BASS)
   .cut(7)
   .gain(0.1)
 
-// quiet octave under the root, so the bass has weight
-const SUB = "<~ ~ ~ ~ [cs1 ~ cs1 ~] [a1 ~ a1 ~] [e1 ~ e1 ~] [b1 ~ b1 ~] [cs1 ~ cs1 ~] [a1 ~ a1 ~] [e1 ~ e1 ~] [b1 ~ b1 ~] [cs1 ~ cs1 ~] [a1 ~ a1 ~] [e1 ~ e1 ~] [b1 ~ b1 ~]>"
+const SUB = "<~ ~ ~ ~ [a1 ~ a1 ~] [gs1 ~ gs1 ~] [fs1 ~ fs1 ~] [f1 ~ f1 ~] [e1 ~ e1 ~] [d1 ~ d1 ~] [a1 ~ a1 ~] [gs1 ~ gs1 ~] [fs1 ~ fs1 ~] [f1 ~ f1 ~] [e1 ~ e1 ~] [d1 ~ d1 ~]>"
 
 $: note(SUB)
   .s("sine")
@@ -84,15 +90,13 @@ $: note(SUB)
   .cut(8)
   .gain(0.32)
 
-// one chord per bar. the jive punches it.
-const CHORD = "<~ ~ ~ ~ [cs3,e3,gs3,b3] [a2,cs3,e3,gs3] [e3,gs3,b3,ds4] [b2,ds3,fs3] [cs3,e3,gs3,b3] [a2,cs3,e3,gs3] [e3,gs3,b3,ds4] [b2,ds3,fs3] [cs3,e3,gs3,b3] [a2,cs3,e3,gs3] [e3,gs3,b3,ds4] [b2,ds3,fs3]>"
+// one triad per bar.
+const CHORD = "<~ ~ ~ ~ [a3,cs4,e4] [gs3,c4,ds4] [fs3,as3,cs4] [f3,a3,c4] [e3,gs3,b3] [d3,fs3,a3] [a3,cs4,e4] [gs3,c4,ds4] [fs3,as3,cs4] [f3,a3,c4] [e3,gs3,b3] [d3,fs3,a3]>"
 
-// two-bar jive, then it repeats with the chords.
-// bar A hits the a of 1, then the & of 2, 3, and 4.
-// bar B hits the & of 1, the a of 2, the a of 3, and the & of 4.
+// two-bar jive. bar A is the a of 1, then the & of 2, 3, and 4.
+// bar B is the & of 1, the a of 2, the a of 3, and the & of 4.
 const JIVE = "<~ ~ ~ ~ [~ ~ ~ x ~ ~ x ~ ~ ~ x ~ ~ ~ x ~] [~ ~ x ~ ~ ~ ~ x ~ ~ ~ x ~ ~ x ~] [~ ~ ~ x ~ ~ x ~ ~ ~ x ~ ~ ~ x ~] [~ ~ x ~ ~ ~ ~ x ~ ~ ~ x ~ ~ x ~] [~ ~ ~ x ~ ~ x ~ ~ ~ x ~ ~ ~ x ~] [~ ~ x ~ ~ ~ ~ x ~ ~ ~ x ~ ~ x ~] [~ ~ ~ x ~ ~ x ~ ~ ~ x ~ ~ ~ x ~] [~ ~ x ~ ~ ~ ~ x ~ ~ ~ x ~ ~ x ~] [~ ~ ~ x ~ ~ x ~ ~ ~ x ~ ~ ~ x ~] [~ ~ x ~ ~ ~ ~ x ~ ~ ~ x ~ ~ x ~] [~ ~ ~ x ~ ~ x ~ ~ ~ x ~ ~ ~ x ~] [~ ~ x ~ ~ ~ ~ x ~ ~ ~ x ~ ~ x ~]>"
 
-// held chord under the stabs, same changes, very quiet
 $: note(CHORD)
   .s("sawtooth")
   .attack(0.09)
@@ -104,9 +108,8 @@ $: note(CHORD)
   .room(0.25)
   .legato(0.95)
   .cut(12)
-  .gain(0.045)
+  .gain(0.05)
 
-// the stab body
 $: note(CHORD)
   .struct(JIVE)
   .s("sawtooth")
@@ -114,17 +117,16 @@ $: note(CHORD)
   .decay(0.14)
   .sustain(0.04)
   .release(0.05)
-  .lpf(sine.range(1100, 2400).slow(4))
-  .hpf(220)
-  .room(0.16)
-  .delay(0.14)
+  .lpf(sine.range(1400, 2800).slow(4))
+  .hpf(240)
+  .room(0.14)
+  .delay(0.12)
   .delaytime(0.125)
-  .delayfeedback(0.2)
+  .delayfeedback(0.18)
   .cut(6)
-  .gain(0.15)
+  .gain(0.11)
 
-// same stab, an octave up, shorter and brighter
-const TOP = "<~ ~ ~ ~ [cs4,e4,gs4,b4] [a3,cs4,e4,gs4] [e4,gs4,b4,ds5] [b3,ds4,fs4] [cs4,e4,gs4,b4] [a3,cs4,e4,gs4] [e4,gs4,b4,ds5] [b3,ds4,fs4] [cs4,e4,gs4,b4] [a3,cs4,e4,gs4] [e4,gs4,b4,ds5] [b3,ds4,fs4]>"
+const TOP = "<~ ~ ~ ~ [a4,cs5,e5] [gs4,c5,ds5] [fs4,as4,cs5] [f4,a4,c5] [e4,gs4,b4] [d4,fs4,a4] [a4,cs5,e5] [gs4,c5,ds5] [fs4,as4,cs5] [f4,a4,c5] [e4,gs4,b4] [d4,fs4,a4]>"
 
 $: note(TOP)
   .struct(JIVE)
@@ -133,12 +135,11 @@ $: note(TOP)
   .decay(0.07)
   .sustain(0)
   .release(0.03)
-  .lpf(2800)
-  .hpf(500)
+  .lpf(3200)
+  .hpf(600)
   .cut(9)
-  .gain(0.045)
+  .gain(0.04)
 
-// a tick on each stab so the attack cuts
 $: s("white")
   .struct(JIVE)
   .attack(0)
@@ -147,16 +148,39 @@ $: s("white")
   .hpf(2500)
   .lpf(9000)
   .cut(11)
-  .gain(0.07)
+  .gain(0.06)
 
-// the recording, chopped onto the same jive. one beat of the bar per hit.
-const CHOP = "<~ ~ ~ ~ [~ ~ ~ 8 ~ ~ 9 ~ ~ ~ 10 ~ ~ ~ 11 ~] [~ ~ 12 ~ ~ ~ ~ 13 ~ ~ ~ 14 ~ ~ 15 ~] [~ ~ ~ 16 ~ ~ 17 ~ ~ ~ 18 ~ ~ ~ 19 ~] [~ ~ 20 ~ ~ ~ ~ 21 ~ ~ ~ 22 ~ ~ 23 ~] [~ ~ ~ 8 ~ ~ 9 ~ ~ ~ 10 ~ ~ ~ 11 ~] [~ ~ 12 ~ ~ ~ ~ 13 ~ ~ ~ 14 ~ ~ 15 ~] [~ ~ ~ 16 ~ ~ 17 ~ ~ ~ 18 ~ ~ ~ 19 ~] [~ ~ 20 ~ ~ ~ ~ 21 ~ ~ ~ 22 ~ ~ 23 ~] [~ ~ ~ 8 ~ ~ 9 ~ ~ ~ 10 ~ ~ ~ 11 ~] [~ ~ 12 ~ ~ ~ ~ 13 ~ ~ ~ 14 ~ ~ 15 ~] [~ ~ ~ 16 ~ ~ 17 ~ ~ ~ 18 ~ ~ ~ 19 ~] [~ ~ 20 ~ ~ ~ ~ 21 ~ ~ ~ 22 ~ ~ 23 ~]>"
+// the six recorded chords, in walk order, punched on the jive.
+const CI = "<~ ~ ~ ~ 0 1 2 3 4 5 0 1 2 3 4 5>"
 
-$: s("loop")
-  .slice(28, CHOP)
-  .legato(0.45)
-  .hpf(280)
-  .lpf(5200)
-  .room(0.08)
-  .cut(10)
-  .gain(0.42)
+$: s("chords")
+  .slice(6, CI)
+  .legato(0.85)
+  .hpf(140)
+  .lpf(7000)
+  .room(0.16)
+  .cut(13)
+  .gain(0.28)
+
+$: s("chords")
+  .slice(6, CI)
+  .struct(JIVE)
+  .legato(0.4)
+  .hpf(220)
+  .lpf(6500)
+  .cut(14)
+  .gain(0.34)
+
+// morning take, bars that sit on A, pitched onto the walk.
+const TAKE = "<~ ~ ~ ~ 4 5 6 7 4 5 6 7 4 5 6 7>"
+const TAKE_SPEED = "<1 1 1 1 1 0.944 0.841 0.794 0.749 0.667 1 0.944 0.841 0.794 0.749 0.667>"
+
+$: s("take")
+  .slice(8, TAKE)
+  .speed(TAKE_SPEED)
+  .legato(1)
+  .hpf(100)
+  .lpf("<800 800 800 800 2400 3200 4200 5200 6400 7200 6400 5600 4800 4000 3200 2400>")
+  .room(0.1)
+  .cut(15)
+  .gain(0.5)
