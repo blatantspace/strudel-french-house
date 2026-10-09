@@ -3,7 +3,7 @@
 // The chords are the same four every time: C#m7, A, E, B.
 // First four bars are the filter opening. Then the chords and bass lock in.
 
-samples('github:blatantspace/strudel-french-house')
+samples({ loop: 'https://raw.githubusercontent.com/blatantspace/strudel-french-house/main/grid.wav' })
 
 setcpm((60 * 48000 / 21632) / 4)
 
